@@ -1,10 +1,12 @@
-const app = require("./server/config")
+const app = require("./server/routes/index");
+const {connectMySql} = require("./infra/mySql")
 
 const StartApi = async () => {
 
     const port = process.env.PORT || 3000
 
     try {
+        await connectMySql();
         app.listen(port, () => {
             console.log(`API ON => http://localhost:${port}`, )
         })
