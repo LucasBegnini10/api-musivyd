@@ -7,6 +7,7 @@ const {getAllUsers, signUp, signIn, getOneUser, updateUser, deleteUser} = requir
 
 const router = express.Router();
 
+router.get("/health", (req, res) => res.send("Server is ON!"))
 
 router.get("/allUsers", verifyJWT ,(req, res) => getAllUsers(req, res))
 
@@ -21,6 +22,6 @@ router.put("/user/:id", verifyJWT, (req, res) => updateUser(req, res))
 router.delete("/user/:id", verifyJWT, (req, res) => deleteUser(req, res))
 
 
-app.use("", router)
+app.use(router)
 
 module.exports = app;
