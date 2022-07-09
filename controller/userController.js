@@ -1,44 +1,37 @@
-const {signUp, getUser, getAllUsers} = require("../service/userService")
+const {getAllUsers, signUpService, getOneUser} = require("../service/users")
 
-module.exports= {
-    
+module.exports = {
+    async getAllUsers(req, res){
+        try {
+            const allUsers = await getAllUsers()
+            res.json(allUsers)
+        } catch (error) {
+            console.log("ERROUU")
+        }
+    }, 
+
     async signUp(req, res){
-        const {name, email, password} = req.body;
+        const {email, password, name} = req.body;
         
-        const validateEmail = await getUser({email})
-
-       if(email && name && password){
-            if(validateEmail && validateEmail.length === 0){
-                const response = await signUp({name, email, password})
-                if(response){
-                    res.status(200).json({
-                        error: false,
-                        message: "User registered successfully!"
-                    })
-                }
-            }else{
-                res.status(400).json({
-                    error: true,
-                    message: "User already exists"
+        if(email && password && name){
+            const response = await signUpService({name, password, email});
+            if(response){
+                res.status(200).json({
+                    sucess: true,
+                    message: "Registration successful"
                 })
             }
-       }
-       else{
-        res.status(400).json({
-            error: true,
-            message: "Invalid Data"
-        })
-       }
-    },
-
-    async getAllUsers(req, res){
-        const allUsers = await getAllUsers();
-        if(allUsers){
-            res.json({
-                error: false,
-                users: allUsers
+        }
+        else{
+            res.status(400).json({
+                error: true,
+                message: "Invalid Data"
             })
         }
-    }
+    },
 
+    async getOneUser(req, res){
+        const {email} = req.body;
+        
+    }
 }
