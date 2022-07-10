@@ -1,5 +1,5 @@
 const {getAllUsersService, signUpService, getOneUserService, updateUserService, deleteUserService} = require("../service/userService")
-const {createJWT} = require("../middleware/JWT")
+const {createAcessToken, createRefreshToken} = require("../middleware/JWT")
 const validateObjectId = require("../utils/validateObjectId")
 
 
@@ -57,17 +57,21 @@ module.exports = {
         if(email && password){
             const user = await getOneUserService({email: email})
             if(user && user.length > 0){
-                if(user[0].password === password){
-                    const id = user[0]._id.toString()
-                    const token = createJWT({
+                if(user[0]?.password === password){
+                    const id = user[0]?._id.toString()
+                    const AcessToken = createAcessToken({
                         email,
                         password,
                         id,
-                        name: user[0].name
-                    })
+                        name: user[0]?.name
+                    });
+                    const RefreshToken = createRefreshToken({id});
                     res.status(200).json({
                         sucess: true,
-                        token: token
+                        auth: {
+                            AcessToken: AcessToken,
+                            RefreshToken: RefreshToken
+                        }
                     })
                 }
                 else{
@@ -143,5 +147,7 @@ module.exports = {
 
         if(!response) res.status(400).json({sucess: true, message: "User successfully deleted"})
 
-    }
+    },
+
+    
 }
