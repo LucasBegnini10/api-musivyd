@@ -21,24 +21,30 @@ module.exports = {
        
             if(validateEmail.length > 0){
                 res.status(400).json({
-                    error: true,
-                    message: 'User already registered'
+                    error: {
+                        status: 400,
+                        message: 'User already registered'
+                    }
                 })
             }
             else{
                 const response = await signUpService({name, password, email});
                 if(response){
                     res.status(200).json({
-                        sucess: true,
-                        message: "Registration successful"
+                        sucess:{
+                            status: 200,
+                            message: "Registration successful"
+                        }
                     })
                 }
             }
         }
         else{
             res.status(400).json({
-                error: true,
-                message: "Invalid Data"
+                error:{
+                    status: 400,
+                    message: "Invalid Data"
+                }
             })
         }
     },
@@ -47,7 +53,10 @@ module.exports = {
         const {email} = req.params;
         const user = await getOneUserService({email});
         res.status(200).json({
-            user
+            sucess: {
+                status: 200,
+                user
+            }
        })
     },
 
@@ -67,31 +76,39 @@ module.exports = {
                     });
                     const RefreshToken = createRefreshToken({id});
                     res.status(200).json({
-                        sucess: true,
-                        auth: {
-                            AcessToken: AcessToken,
-                            RefreshToken: RefreshToken
+                        sucess:{
+                            status: 200,
+                            auth: {
+                                AcessToken: AcessToken,
+                                RefreshToken: RefreshToken
+                            }
                         }
                     })
                 }
                 else{
                     res.status(400).json({
-                        error: true,
-                        message: "Password Invalid"
+                        error: {
+                            status: 400,
+                            message: "Password Invalid"
+                        }
                     })
                 }
             }
             else{
                 res.status(400).json({
-                    error: true,
-                    message: "Email not Registered"
+                    error: {
+                        status: 400,
+                        message: "Email not Registered"
+                    }
                 })
             }
         }
         else{
             res.status(400).json({
-                error: true,
-                message: "Invalid Data"
+                error:{
+                    status: 400,
+                    message: "Invalid Data"
+                }
             })
         }
     },
@@ -103,8 +120,8 @@ module.exports = {
 
         const idIsValid = validateObjectId(id);
 
-        if(!id || !id.trim() || !idIsValid) return res.status(400).json({error: true, message: "Invalid Id"})
-        if(!newName && !newPassword) return res.status(200).json({message: "No fields to update"})
+        if(!id || !id.trim() || !idIsValid) return res.status(400).json({error:{status: 400 ,message: "Invalid Id"} })
+        if(!newName && !newPassword) return res.status(200).json({sucess: {status: 200 ,message: "No fields to update"}})
 
         const user = await getOneUserService({id: id})
 
@@ -113,21 +130,27 @@ module.exports = {
 
             if(response.update){
                 res.status(200).json({
-                    sucess: true,
-                    message: "Update done successfully"
+                    sucess: {
+                        status: 200,
+                        message: "Update done successfully"
+                    }
                 })
             }
             else{
                 res.status(400).json({
-                    error: true,
-                    message: 'Error updating'
+                    error: {
+                        status: 400,
+                        message: 'Error updating'
+                    }
                 })
             }
         }
         else{
             res.status(404).json({
-                error: true,
-                message: "User not found"
+                error: {
+                    status: 404,
+                    message: "User not found"
+                }
             })
         }
     },
@@ -137,15 +160,15 @@ module.exports = {
 
         const idIsValid = validateObjectId(id);
 
-        if(!id || !id.trim() || !idIsValid) return res.status(400).json({error: true, message: "Invalid Id"});
+        if(!id || !id.trim() || !idIsValid) return res.status(400).json({error: {status: 400, message: "Invalid Id"}});
 
         const userExists = await getOneUserService({id})
 
-        if(!userExists) return res.status(404).json({message: "User not found"})
+        if(!userExists) return res.status(404).json({error: {status: 404, message: "User not found"}})
 
         const response = await deleteUserService({id});
 
-        if(!response) res.status(400).json({sucess: true, message: "User successfully deleted"})
+        if(!response) res.status(200).json({sucess:{ status: 200 ,message: "User successfully deleted"}})
 
     },
 

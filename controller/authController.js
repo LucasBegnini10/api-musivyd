@@ -7,16 +7,21 @@ module.exports = {
         const acessToken = createAcessToken({id, email, name})
 
         if(!id && !email && !name){
-            res.staus(400).json({
-                error: true,
-                message: "Ivalid Data"
+            return res.staus(400).json({
+                error: {
+                    status: 400,
+                    message: "Ivalid Data"
+                }
             })
         }
 
         res.status(201).json({
-            auth:{
-                AcessToken: acessToken,
-                RefreshToken: refreshToken
+            sucess: {
+                status: 201,
+                auth:{
+                    AcessToken: acessToken,
+                    RefreshToken: refreshToken
+                }
             }
         })
     }
